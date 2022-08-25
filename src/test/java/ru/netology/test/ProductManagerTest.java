@@ -3,10 +3,13 @@ package ru.netology.test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import ru.netology.domain.Book;
+import ru.netology.domain.NotFoundException;
 import ru.netology.domain.Product;
 import ru.netology.domain.Smartphone;
 import ru.netology.manager.ProductManager;
 import ru.netology.repository.Repository;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ProductManagerTest {
     Repository repository = new Repository();
@@ -142,7 +145,7 @@ public class ProductManagerTest {
 
 
     @Test
-    public void testShouldNoIdSearch() {
+    public void removeByIdException() {
         repository.add(book1);
         repository.add(book2);
         repository.add(book3);
@@ -151,10 +154,12 @@ public class ProductManagerTest {
         repository.add(smartphone2);
         repository.add(smartphone3);
         repository.add(smartphone4);
-        Assertions.assertThrows(RuntimeException.class, () -> repository.remove(888888));
-
-
+        Product[] actual = repository.remove(1);
+        Product[] expected = {book2, book3, book4, smartphone1, smartphone2, smartphone3, smartphone4};
+        Assertions.assertArrayEquals(expected, actual);
+        assertThrows(NotFoundException.class, () -> repository.remove(666));
     }
+
 
     @Test
     public void testShouldRemoveId() {
